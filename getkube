@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+ 
+# Get prerequisites for Kubernetes.
+#
+wget http://archive.ubuntu.com/ubuntu/pool/main/c/conntrack-tools/conntrack_1.4.4+snapshot20161117-6ubuntu2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/main/s/socat/socat_1.7.3.2-2ubuntu2_amd64.deb
+ 
+# Update apt.
+#
+apt-get update && apt-get install -y apt-transport-https apt-mirror
+ 
+# Get the Google key and add it to apt.
+#
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+ 
+# Add Kubernetes' Ubuntu apt repo to apt-mirror's mirror list.
+#
+echo deb https://apt.kubernetes.io/ kubernetes-xenial main > /etc/apt/mirror.list
+ 
+# Run apt-mirror to download the Kubernetes components to the current directory.
+#
+apt-mirror
+ 
+# Save Google's key to the mirror directory.
+#
+apt-key export 54A647F9048D5688D7DA2ABE6A030B21BA07F4FB > /var/spool/apt-mirror/mirror/apt.kubernetes.io/kubernetes.key
+ 
+# Compress the mirror directory to an archive file in the home directory.
+#
+tar -cvzf kube_mirror.tar.gz -C /var/spool/apt-mirror/mirror apt.kubernetes.io
+tar -cvzf kube-prereqs.tar.gz *.deb
+ 
+# Cleanup.
+#
+rm -rf /var/spool/apt-mirror/mirror/apt.kubernetes.io
+rm -rf *.deb
