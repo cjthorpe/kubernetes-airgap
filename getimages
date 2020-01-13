@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+ 
+# Get required Docker images for Kubernetes.
+#
+docker pull k8s.gcr.io/kube-proxy:v1.17.0
+docker save k8s.gcr.io/kube-proxy:v1.17.0 > kube-proxy_v1.17.0.tar
+docker pull k8s.gcr.io/kube-apiserver:v1.17.0
+docker save k8s.gcr.io/kube-apiserver:v1.17.0 > kube-apiserver_v1.17.0.tar
+docker pull k8s.gcr.io/kube-controller-manager:v1.17.0
+docker save k8s.gcr.io/kube-controller-manager:v1.17.0 > kube-controller-manager_v1.17.0.tar
+docker pull k8s.gcr.io/kube-scheduler:v1.17.0
+docker save k8s.gcr.io/kube-scheduler:v1.17.0 > kube-scheduler_v1.17.0.tar
+docker pull k8s.gcr.io/etcd:3.3.15-0
+docker save k8s.gcr.io/etcd:3.3.15-0 > etcd_3.3.15-0.tar
+docker pull k8s.gcr.io/coredns:1.6.2
+docker save k8s.gcr.io/coredns:1.6.2 > coredns_1.6.2.tar
+docker pull k8s.gcr.io/pause:3.1
+docker save k8s.gcr.io/pause:3.1 > pause_3.1.tar
+docker pull weaveworks/weave-npc:2.6.0
+docker save weaveworks/weave-npc:2.6.0 > weave-npc_2.6.0.tar
+docker pull weaveworks/weave-kube:2.6.0
+docker save weaveworks/weave-kube:2.6.0 > weave-kube_2.6.0.tar
+ 
+# Cleanup
+#
+docker system prune -a -f
