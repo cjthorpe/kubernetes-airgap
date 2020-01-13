@@ -1,39 +1,39 @@
 #!/usr/bin/env bash
- 
+
 wget http://archive.ubuntu.com/ubuntu/pool/universe/p/pigz/pigz_2.4-1_amd64.deb
 wget http://archive.ubuntu.com/ubuntu/pool/universe/a/aufs-tools/aufs-tools_4.9+20170918-1ubuntu1_amd64.deb
 wget http://archive.ubuntu.com/ubuntu/pool/universe/c/cgroupfs-mount/cgroupfs-mount_1.4_all.deb
 wget http://archive.ubuntu.com/ubuntu/pool/main/libt/libtool/libltdl7_2.4.6-2_amd64.deb
- 
+
 # Update apt, install apt secure transport and certificates and apt-mirror.
 #
 apt-get update
 apt-get -y install apt-transport-https ca-certificates curl software-properties-common apt-mirror
- 
+
 # Get public keys for Docker and add to apt for package signature verification.
 #
 apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 7EA0A9C3F273FCD8
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
- 
+
 # Add Docker's apt repo to apt-mirror's mirror list.
 #
 echo deb [arch=amd64] https://download.docker.com/linux/ubuntu/ bionic edge > /etc/apt/mirror.list
 echo deb [arch=amd64] https://download.docker.com/linux/ubuntu/ bionic InRelease >> /etc/apt/mirror.list
- 
+
 # Run apt-mirror to download Docker repo to current directory.
 #
 apt-mirror
- 
+
 # Save the public keys for Docker to the mirror directory.
 #
 apt-key export 7EA0A9C3F273FCD8 > /var/spool/apt-mirror/mirror/download.docker.com/docker.key
 apt-key export 9DC858229FC7DD38854AE2D88D81803C0EBFCD88 > /var/spool/apt-mirror/mirror/download.docker.com/containerd.key
- 
+
 # Compress the mirror directory to an archive file in the home directory.
 #
 tar -cvzf docker_mirror.tar.gz -C /var/spool/apt-mirror/mirror download.docker.com
 tar -cvzf prerequisites.tar.gz *.deb
- 
+
 # Cleanup.
 #
 rm -rf /var/spool/apt-mirror/mirror/download.docker.com
