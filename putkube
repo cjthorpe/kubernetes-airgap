@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+ 
+# Extract the prerequisites repository.
+#
+tar -xvzf kube-prereqs.tar.gz
+ 
+# Install prerequisite package files.
+#
+apt install ./conntrack_1.4.4+snapshot20161117-6ubuntu2_amd64.deb
+apt install ./socat_1.7.3.2-2ubuntu2_amd64.deb
+ 
+# Create a directory for the mirrored repository.
+#
+mkdir -p /var/deb/apt-mirror
+ 
+# Extract the mirrored repository.
+#
+tar -xvzf kube_mirror.tar.gz -C /var/deb/apt-mirror/
+ 
+# Add the local Kubernetes mirror to apt-get sources list.
+#
+echo 'deb [arch=amd64] file:///var/deb/apt-mirror/apt.kubernetes.io/ kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes_local.list
+ 
+# Add the Google public key to apt-get so that it can verify the package signature.
+#
+apt-key add /var/deb/apt-mirror/apt.kubernetes.io/kubernetes.key
+ 
+# Run apt-get update so that apt will recognise the new local repo added in the previous step.
+#
+apt-get update
+ 
+# Install Kubernetes components.
+#
+apt-get install -y kubeadm kubelet kubectl
+ 
+# Cleanup.
+#
+rm /etc/apt/sources.list.d/kubernetes_local.list
+rm -rf *.deb
+rm -rf *.tar.gz
+

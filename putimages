@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+ 
+# Install the docker images required by Kubernetes.
+#
+docker load < kube-proxy_v1.70.0.tar
+docker load < kube-apiserver_v1.17.0.tar
+docker load < kube-controller-manager_v1.17.0.tar
+docker load < kube-scheduler_v1.17.0.tar
+docker load < etcd_3.3.15-0.tar
+docker load < coredns_1.6.2.tar
+docker load < pause_3.1.tar
+docker load < weave-npc_2.6.0.tar
+docker load < weave-kube_2.6.0.tar
+ 
+# Cleanup.
+#
+rm -rf *.tar

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+ 
+# Extract the prerequisites repository.
+tar -xvzf prerequisites.tar.gz
+ 
+# Install prerequisite package files.
+apt install ./pigz_2.4-1_amd64.deb
+apt install ./aufs-tools_4.9+20170918-1ubuntu1_amd64.deb
+apt install ./cgroupfs-mount_1.4_all.deb
+apt install ./libltdl7_2.4.6-2_amd64.deb
+ 
+# Create a directory for the mirrored repository.
+mkdir -p /var/deb/apt-mirror
+ 
+# Extract the mirrored repository.
+tar -xvzf docker_mirror.tar.gz -C /var/deb/apt-mirror/
+ 
+# Add the local Docker mirror to apt-get sources list.
+echo 'deb [arch=amd64] file:///var/deb/apt-mirror/download.docker.com/linux/ubuntu bionic edge' > /etc/apt/sources.list.d/docker_local.list
+ 
+# Add the public keys for Docker to apt-get so that it can verify the package signature.
+apt-key add /var/deb/apt-mirror/download.docker.com/docker.key
+apt-key add /var/deb/apt-mirror/download.docker.com/containerd.key
+ 
+# Run apt-get update so that apt will recognise the new local repo added in the previous step.
+apt-get update
+ 
+# Install Docker engine.
+apt-get install -y docker-ce
+ 
+# Enable Docker.
+sudo systemctl enable docker
+ 
+# Cleanup
+rm -rf /etc/apt/sources.list.d/docker_local.list
+rm -rf *.deb
+rm -rf *.tar.gz
